@@ -22,6 +22,9 @@ async function getChatters(token, channelID) {
             let data = await response.json();
             return data.data;
         }
+
+        return {message: "Error getting chatters", status: response.status};
+        
     } catch (error) {
         console.log(error);
     }

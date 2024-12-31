@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistance List</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Assistance List</h1>
+        <div class="form">
+            <input type="text" placeholder="Username" id="username">
+            <button onclick="add()">Add</button>
+            <button onclick="deleteAll()">Delete All</button>
+        </div>
+        <div class="display" id="display"></div>
+    </div>
+
+    <script>
+        async function add() {
+            const username = document.getElementById('username').value;
+            let response = await fetch('/list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: username
+                })
+            })
+
+            let data = await response.json();
+
+            if(data.status === 200) {
+                document.getElementById('username').value = '';
+                display();
+            }
+        }
+
+        async function deleteAll() {
+            let response = await fetch('/list/all', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            let data = await response.json();
+
+            if(data.status === 200) {
+                display();
+            }
+        }
+
+        function display() {
+            let response = fetch('/list');
+
+            response.then(res => res.json()).then(data => {
+                let display = document.getElementById('display');
+                display.innerHTML = '';
+                data.forEach(user => {
+                    let li = document.createElement('li');
+                    li.innerHTML = user;
+                    display.appendChild(li);
+                });
+            });
+            
+        }
+
+        display();
+    </script>
+    
+</body>
+</html>

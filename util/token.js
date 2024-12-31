@@ -32,7 +32,7 @@ async function refreshToken(refreshToken) {
         let newRefreshToken = data.refresh_token;
 
         cacheClient.hset('oz:data', 'token', newToken);
-        cacheClient.hset('oz:data', 'refresh_token', newRefreshToken);
+        cacheClient.hset('oz:data', 'refreshToken', newRefreshToken);
 
         let doc = await channelSchema.findOne({ username: 'ozbellvt' });
 

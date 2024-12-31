@@ -4,9 +4,13 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { getClient } = require('../../util/database/dragonfly');
 const { getUserByToken } = require('../../functions/user/getuser');
+const path = require('path');
 
 const channelSchema = require('../../models/channel');
 const listSchema = require('../../models/lists');
+
+const viewRoutes = require('./routes/view.routes');
+const listRoutes = require('./routes/list.routes');
 
 const app = express();
 
@@ -14,9 +18,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(express.static(path.join(__dirname, '../routes/public')));
+
+app.use('/view', viewRoutes);
+app.use('/list', listRoutes);
+
 app.get('/', async (req, res) => {
-    res.send('Hello World!');
-    const client = getClient();
+    res.redirect('/view');
 });
 
 app.get('/auth/register', async (req, res) => {
