@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 module.exports = {
     init: async () => {
         const dbOptions = {};
-        console.log(process.env.MONGODB_URL);
         mongoose.connect(process.env.MONGODB_URL, dbOptions);
         mongoose.Promise = global.Promise;
         
