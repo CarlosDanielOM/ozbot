@@ -11,6 +11,7 @@ const listSchema = require('../../models/lists');
 
 const viewRoutes = require('./routes/view.routes');
 const listRoutes = require('./routes/list.routes');
+const attendanceRoutes = require('./routes/attendance.routes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, '../routes/public')));
 
 app.use('/view', viewRoutes);
 app.use('/list', listRoutes);
+app.use('/attendance', attendanceRoutes);
 
 app.get('/', async (req, res) => {
     res.redirect('/view');

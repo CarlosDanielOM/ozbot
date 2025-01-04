@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OzBell Attendance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container mx-auto">
         <h1>OzBell Attendance</h1>
-        <button onclick="login()">Login with Twitch</button>
-        <button onclick="list()">List</button>
+        <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="login()">Login with Twitch</button>
+        <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="list()">List</button>
+        <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="attendance()">Attendance</button>
     </div>
     
     <script>
@@ -21,6 +23,10 @@
 
         function list() {
             window.location.href = '/view/list';
+        }
+
+        function attendance() {
+            window.location.hred = '/view/attendance';
         }
         
     </script>

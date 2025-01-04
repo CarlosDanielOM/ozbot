@@ -24,7 +24,12 @@ async function init() {
     
     let ozList = await listSchema.findOne({ name: ozLogin });
 
-    
+    if(!ozList) {
+        ozList = {
+            name: "ozbellvt",
+            list: []
+        }
+    }
     if(ozList.list.length == 0) {
         ozList.list = ['ozbellvt'];
     }
@@ -66,7 +71,7 @@ async function init() {
     }, endDayTime);
 
     const app = require('./server');
-    const PORT = process.env.PORT || 3535;
+    const PORT = process.argv[2] || 3535;
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });
