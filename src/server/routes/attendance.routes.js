@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
                 login: user,
                 date: {
                     day: today.getDate(),
-                    month: today.getMonth(),
+                    month: today.getMonth() + 1,
                     year: today.getFullYear()
                 },
                 present: assistance ?? 0,
@@ -46,7 +46,12 @@ router.get('/', async (req, res) => {
     
     res.json({
         status: 200,
-        data: attendance
+        data: attendance,
+        server_time: {
+           hours: today.getHours(),
+           minutes: today.getMinutes(),
+           seconds: today.getSeconds()
+        }
     });
 });
 
