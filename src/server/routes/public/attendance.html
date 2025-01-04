@@ -8,6 +8,32 @@
 </head>
 <body>
     <h1>Attendance</h1>
-    <script></script>
+    <script type="module">
+        async function getAttendance(day = null, month = null, year = null) {
+
+            let params = new URLSearchParams();
+            if(day) {
+                params.append('day', day);
+            }
+            if(month) {
+                params.append('month', month);
+            }
+            if(year) {
+                params.append('year', year);
+            }
+            
+            let response = await fetch('https://oz.domdimabot.com/attendance' + '?' + params.toString());
+            let data = await response.json();
+            if(data.status === 200) {
+                return data.data;
+            } else {
+                console.log({data})
+            }
+        }
+
+        let attendance = await getAttendance();
+
+        console.log(attendance)
+    </script>
 </body>
 </html>
