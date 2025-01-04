@@ -6,7 +6,7 @@ const attendenceSchema = new mongoose.Schema({
     total: Number,
     timestamp: {type: Number, default: Date.now()},
     date: {
-        day: { type: Number, default: () => new Date().getDate() },
+        day: { type: Number, default: () => new Date().getDate() - 1 },
         month: { type: Number, default: () => new Date().getMonth() + 1 },
         year: { type: Number, default: () => new Date().getFullYear() }
     }

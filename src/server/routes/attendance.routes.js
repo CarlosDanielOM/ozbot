@@ -50,4 +50,34 @@ router.get('/', async (req, res) => {
     });
 });
 
+router.get('/fix', async (req, res) => {
+    // let attendance = await attendanceSchema.find();
+
+    // for(let i = 0; i < attendance.length; i++) {
+    //     let dateDay = attendance[i].date.day;
+    //     let dateMonth = attendance[i].date.month;
+    //     let dateYear = attendance[i].date.year;
+
+    //     dateDay--;
+        
+    //     attendance[i].date.day = dateDay;
+    //     attendance[i].date.month = dateMonth;
+    //     attendance[i].date.year = dateYear;
+
+    //     if(dateDay < 1) {
+    //         attendance[i].date.day = 31;
+    //         attendance[i].date.month = 12;
+    //         attendance[i].date.year = 2024;
+    //     }
+
+    //     console.log({login: attendance[i].login, date: attendance[i].date})
+
+    //     await attendance[i].save();
+
+    // }
+
+    res.send('quack')
+    
+});
+
 module.exports = router;
