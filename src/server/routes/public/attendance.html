@@ -6,11 +6,71 @@
     <title>Attendance</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Attendance</h1>
+<body class="bg-slate-400">
+    <div class="back-menu fixed top-4 left-4 z-10 flex justify-between items-center">
+        <button class="text-white bg-orange-400 rounded-md p-2 w-24" onclick="window.history.back()">Back</button>
+    </div>
+    <h1 class="text-center text-5xl font-bold my-4">Attendance</h1>
+    <div id="sorter" class="sorter fixed top-8 right-40 z-10 flex justify-around items-center w-52">
+        <select name="sortingType" id="sortingType" class="w-24 p-2 text-center text-white bg-orange-200 rounded-md">
+            <option value="login">Login</option>
+            <option value="present">Present</option>
+        </select>
+        <select name="sortingOrder" id="sortingOrder" class="w-24 p-2 text-center text-white bg-orange-200 rounded-md">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+    </div>
+    <div id="times" class="absolute top-px left-40 z-10 flex justify-center items-center"> 
+        <div class="server-time">
+            <span class="text-white block w-full text-center rounded-md p-2 w-24">Server Time</span>
+            <span id="serverTime" class="text-white block w-full text-center rounded-md p-2 w-24"></span>
+        </div>
+        <div class="local-time">
+            <span class="text-white block w-full text-center rounded-md p-2 w-24">Local Time</span>
+            <span id="localTime" class="text-white block w-full text-center rounded-md p-2 w-24"></span>
+        </div>
+    </div>
+    <div class="container mx-auto">
+        <ul class="display grid grid-cols-2 md:grid-cols-4 gap-x-40" id="display"></ul>
+    </div>
     <script type="module">
-        async function getAttendance(day = null, month = null, year = null) {
 
+        let display = document.getElementById('display');
+        let sortingTypeElement = document.getElementById('sortingType');
+        let sortingOrderElement = document.getElementById('sortingOrder');
+        
+        let sortingType = 'login'; // login, present, total
+        let sortingOrder = 'asc';
+
+        sortingTypeElement.addEventListener('change', (e) => {
+            sortingType = e.target.value;
+            displayAttendance(sortAttendance(attendance.data));
+        });
+
+        sortingOrderElement.addEventListener('change', (e) => {
+            sortingOrder = e.target.value;
+            displayAttendance(sortAttendance(attendance.data));
+        });
+
+        function sortAttendance(attendance) {
+            let sortedAttendance = attendance.slice();
+            sortedAttendance.sort((a, b) => {
+                if(a[sortingType] < b[sortingType]) {
+                    return -1;
+                } else if(a[sortingType] > b[sortingType]) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            if(sortingOrder === 'desc') {
+                sortedAttendance.reverse();
+            }
+            return sortedAttendance;
+        }
+        
+        async function getAttendance(day = null, month = null, year = null) {
             let params = new URLSearchParams();
             if(day) {
                 params.append('day', day);
@@ -21,19 +81,127 @@
             if(year) {
                 params.append('year', year);
             }
-            
             let response = await fetch('https://oz.domdimabot.com/attendance' + '?' + params.toString());
             let data = await response.json();
             if(data.status === 200) {
-                return data.data;
+
+                //Eliminate duplicates and also the user total
+                data.data = data.data.filter((user, index) => {
+                    if(user.login === 'total') return false;
+                    return data.data.findIndex(u => u.login === user.login) === index;
+                });
+                
+                return {data: data.data, server_time: data.server_time};
             } else {
-                console.log({data})
+                console.log({data});
             }
         }
 
         let attendance = await getAttendance();
 
-        console.log(attendance)
+        function dualTimes(server_time, local_time = null) {
+            if(!local_time) {
+                local_time = new Date();
+            }
+
+            let localTimeString = "AM";
+            if(local_time.getHours() > 12) {
+                localTimeString = "PM";
+                local_time.setHours(local_time.getHours() - 12);
+            }
+
+            let serverTimeString = "AM";
+            if(server_time.hours > 12) {
+                serverTimeString = "PM";
+                server_time.hours = server_time.hours - 12;
+            }
+            
+            let serverHours = server_time.hours;
+            let serverMinutes = server_time.minutes;
+            let serverSeconds = server_time.seconds;
+
+            let localHours = local_time.getHours();
+            let localMinutes = local_time.getMinutes();
+            let localSeconds = local_time.getSeconds();
+
+            let serverTimeElement = document.getElementById('serverTime');
+            let localTimeElement = document.getElementById('localTime');
+
+            serverTimeElement.innerHTML = `${serverHours}:${serverMinutes}:${serverSeconds} ${serverTimeString}`;
+            localTimeElement.innerHTML = `${localHours}:${localMinutes}:${localSeconds} ${localTimeString}`;
+
+            setInterval(() => {
+                serverTimeElement.innerHTML = `${serverHours}:${serverMinutes}:${serverSeconds} ${serverTimeString}`;
+                localTimeElement.innerHTML = `${localHours}:${localMinutes}:${localSeconds} ${localTimeString}`;
+                
+                serverSeconds++;
+                if(serverHours > 23) {
+                    serverHours = 0;
+                    serverMinutes++;
+                    if(serverMinutes > 59) {
+                        serverMinutes = 0;
+                        serverSeconds++;
+                        if(serverSeconds > 59) {
+                            serverSeconds = 0;
+                        }
+                    }
+                }
+                localSeconds++;
+                if(localHours > 23) {
+                    localHours = 0;
+                    localMinutes++;
+                    if(localMinutes > 59) {
+                        localMinutes = 0;
+                        localSeconds++;
+                        if(localSeconds > 59) {
+                            localSeconds = 0;
+                        }
+                    }
+                }
+            }, 1000);
+        }
+
+        function displayAttendance(attendance) {
+            let display = document.getElementById('display');
+            display.innerHTML = '';
+            attendance.forEach(user => {
+                let li = document.createElement('li');
+                li.classList.add('text-stone-100', 'hover:text-stone-500', 'list-none', 'h-fit', 'w-fit')
+
+                //Color depending on present
+                
+                let container = document.createElement('div');
+                let total = user.total;
+                let percent = user.present / total;
+                if(percent < 0.25) {
+                    container.classList.add('bg-red-500');
+                } else if(percent < 0.5) {
+                    container.classList.add('bg-orange-500');
+                } else if(percent < 0.75) {
+                    container.classList.add('bg-yellow-500');
+                } else {
+                    container.classList.add('bg-green-500');
+                }
+                container.classList.add('flex', 'flex-col', 'flex-wrap', 'h-fit', 'my-5')
+                let span = document.createElement('span');
+                span.classList.add('block', 'w-full', 'text-center', 'p-2', 'border', 'border-sky-400', 'border-b-0', 'h12')
+                let attendanceSpan = document.createElement('span');
+                attendanceSpan.classList.add('text-xl', 'text-center', 'text-white', 'w-full', 'border', 'border-sky-400', 'h-12');
+                attendanceSpan.innerHTML = `${user.present}/${user.total}`;
+                span.innerHTML = `${user.login}`;
+                container.appendChild(span);
+                container.appendChild(attendanceSpan);
+                li.appendChild(container);
+                // li.innerHTML = `${user.login} - ${user.present}/${user.total}`;
+                display.appendChild(li);
+            });
+        }
+
+        attendance.data = sortAttendance(attendance.data);
+
+        displayAttendance(attendance.data);
+        dualTimes(attendance.server_time);
+        
     </script>
 </body>
 </html>
