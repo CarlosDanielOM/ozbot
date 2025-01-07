@@ -21,9 +21,15 @@ router.get('/', async (req, res) => {
     let todayAttendance = [];
 
     if(attendance.length === 0) {
-        todayTotal = await cacheClient.get('oz:assistance:total') ?? 1;
+        todayTotal = await cacheClient.get('oz:assistance:total');
         let keys = await cacheClient.keys('oz:assistance:*');
         todayUsers = keys.map(key => key.split(':')[2]);
+
+        if(todayTotal === null) {
+            todayTotal = 0;
+        }
+
+        todayTotal = parseInt(todayTotal) + 1;
 
         for(let i = 0; i < todayUsers.length; i++) {
             let user = todayUsers[i];
