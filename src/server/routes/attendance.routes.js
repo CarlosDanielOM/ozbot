@@ -57,31 +57,23 @@ router.get('/', async (req, res) => {
            hours: today.getHours(),
            minutes: today.getMinutes(),
            seconds: today.getSeconds()
+        },
+        server_date: {
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+            year: today.getFullYear()
         }
     });
 });
 
 router.get('/fix', async (req, res) => {
-    // let attendance = await attendanceSchema.find();
+    // let attendance = await attendanceSchema.find({'date.day': 5});
 
     // for(let i = 0; i < attendance.length; i++) {
-    //     let dateDay = attendance[i].date.day;
-    //     let dateMonth = attendance[i].date.month;
-    //     let dateYear = attendance[i].date.year;
+    //     if(attendance[i].present > 8) attendance[i].present = 8;
+    //     if(attendance[i].total >8) attendance[i].total = 8;
 
-    //     dateDay--;
-        
-    //     attendance[i].date.day = dateDay;
-    //     attendance[i].date.month = dateMonth;
-    //     attendance[i].date.year = dateYear;
-
-    //     if(dateDay < 1) {
-    //         attendance[i].date.day = 31;
-    //         attendance[i].date.month = 12;
-    //         attendance[i].date.year = 2024;
-    //     }
-
-    //     console.log({login: attendance[i].login, date: attendance[i].date})
+    //     console.log(attendance[i]);
 
     //     await attendance[i].save();
 
