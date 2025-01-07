@@ -11,7 +11,7 @@
         <button class="text-white bg-orange-400 rounded-md p-2 w-24" onclick="window.history.back()">Back</button>
     </div>
     <h1 class="text-center text-5xl font-bold my-4">Attendance</h1>
-    <div id="sorter" class="sorter fixed top-8 right-40 z-10 flex justify-around items-center w-52">
+    <div id="sorter" class="sorter fixed top-8 right-40 z-10 flex justify-around gap-x-2 items-center w-60">
         <select name="sortingType" id="sortingType" class="w-24 p-2 text-center text-white bg-orange-200 rounded-md">
             <option value="login">Login</option>
             <option value="present">Present</option>
@@ -20,6 +20,10 @@
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
         </select>
+        <div id="datePicker" class="">
+            <input 
+                type="date" id="attendanceDate" class="p-2 text-center bg-orange-200 text-white rounded-md" min="2024-12-31">
+        </div>
     </div>
     <div id="times" class="absolute top-px left-40 z-10 flex justify-center items-center"> 
         <div class="server-time">
@@ -39,6 +43,7 @@
         let display = document.getElementById('display');
         let sortingTypeElement = document.getElementById('sortingType');
         let sortingOrderElement = document.getElementById('sortingOrder');
+        let attendanceDateElement = document.getElementById('attendanceDate');
         
         let sortingType = 'login'; // login, present, total
         let sortingOrder = 'asc';
@@ -50,6 +55,16 @@
 
         sortingOrderElement.addEventListener('change', (e) => {
             sortingOrder = e.target.value;
+            displayAttendance(sortAttendance(attendance.data));
+        });
+
+        attendanceDateElement.addEventListener('change', async (e) => {
+            const selecetedDate = new Date(e.target.value);
+            const year = selecetedDate.getFullYear();
+            const month = selecetedDate.getMonth() + 1;
+            const day = selecetedDate.getDate();
+
+            let attendance = await getAttendance(day, month, year);
             displayAttendance(sortAttendance(attendance.data));
         });
 
@@ -100,6 +115,7 @@
         let attendance = await getAttendance();
 
         function dualTimes(server_time, local_time = null) {
+            console.log({server_time})
             if(!local_time) {
                 local_time = new Date();
             }
