@@ -21,8 +21,7 @@
             <option value="desc">Descending</option>
         </select>
         <div id="datePicker" class="">
-            <input 
-                type="date" id="attendanceDate" class="p-2 text-center bg-orange-200 text-white rounded-md" min="2024-12-31">
+            <!-- <input type="date" id="attendanceDate" class="p-2 text-center bg-orange-200 text-white rounded-md" min="2024-12-31"> -->
         </div>
     </div>
     <div id="times" class="absolute top-px left-40 z-10 flex justify-center items-center"> 
@@ -43,7 +42,8 @@
         let display = document.getElementById('display');
         let sortingTypeElement = document.getElementById('sortingType');
         let sortingOrderElement = document.getElementById('sortingOrder');
-        let attendanceDateElement = document.getElementById('attendanceDate');
+        let attendanceDateElement;
+        let selectedDateSaved = null;
         
         let sortingType = 'login'; // login, present, total
         let sortingOrder = 'asc';
@@ -55,16 +55,6 @@
 
         sortingOrderElement.addEventListener('change', (e) => {
             sortingOrder = e.target.value;
-            displayAttendance(sortAttendance(attendance.data));
-        });
-
-        attendanceDateElement.addEventListener('change', async (e) => {
-            const selecetedDate = new Date(e.target.value);
-            const year = selecetedDate.getFullYear();
-            const month = selecetedDate.getMonth() + 1;
-            const day = selecetedDate.getDate();
-
-            let attendance = await getAttendance(day, month, year);
             displayAttendance(sortAttendance(attendance.data));
         });
 
@@ -105,8 +95,30 @@
                     if(user.login === 'total') return false;
                     return data.data.findIndex(u => u.login === user.login) === index;
                 });
+
+                attendanceDateElement = document.createElement('input');
+                attendanceDateElement.type = 'date';
+                attendanceDateElement.id = 'attendanceDate';
+                attendanceDateElement.classList.add('p-2', 'text-center', 'bg-orange-200', 'text-white', 'rounded-md');
+                attendanceDateElement.min = '2024-12-31';
+                attendanceDateElement.max = new Date().toISOString().split('T')[0];
+                attendanceDateElement.value = selectedDateSaved ?? `${new Date().toISOString().split('T')[0]}`;
+                document.getElementById('datePicker').innerHTML = '';
+                document.getElementById('datePicker').appendChild(attendanceDateElement);
+
+                attendanceDateElement.addEventListener('change', async (e) => {
+                const selecetedDate = new Date(e.target.value);
+                const year = selecetedDate.getFullYear();
+                const month = selecetedDate.getMonth() + 1;
+                const day = selecetedDate.getDate();
+
+                selectedDateSaved = `${year}-${month}-${day}`;
+
+                let attendance = await getAttendance(day, month, year);
+                displayAttendance(sortAttendance(attendance.data));
+            });
                 
-                return {data: data.data, server_time: data.server_time};
+                return {data: data.data, server_time: data.server_time, server_date: data.server_date};
             } else {
                 console.log({data});
             }
