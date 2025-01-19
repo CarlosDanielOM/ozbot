@@ -6,38 +6,180 @@
     <title>Attendance</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-400">
-    <div class="back-menu fixed top-4 left-4 z-10 flex justify-between items-center">
-        <button class="text-white bg-orange-400 rounded-md p-2 w-24" onclick="window.history.back()">Back</button>
-    </div>
-    <h1 class="text-center text-5xl font-bold my-4">Attendance</h1>
-    <div id="sorter" class="sorter fixed top-8 right-40 z-10 flex justify-around gap-x-2 items-center w-60">
-        <select name="sortingType" id="sortingType" class="w-24 p-2 text-center text-white bg-orange-200 rounded-md">
-            <option value="login">Login</option>
-            <option value="present">Present</option>
-        </select>
-        <select name="sortingOrder" id="sortingOrder" class="w-24 p-2 text-center text-white bg-orange-200 rounded-md">
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-        </select>
-        <div id="datePicker" class="">
-            <!-- <input type="date" id="attendanceDate" class="p-2 text-center bg-orange-200 text-white rounded-md" min="2024-12-31"> -->
-        </div>
-    </div>
-    <div id="times" class="absolute top-px left-40 z-10 flex justify-center items-center"> 
-        <div class="server-time">
-            <span class="text-white block w-full text-center rounded-md p-2 w-24">Server Time</span>
-            <span id="serverTime" class="text-white block w-full text-center rounded-md p-2 w-24"></span>
-        </div>
-        <div class="local-time">
-            <span class="text-white block w-full text-center rounded-md p-2 w-24">Local Time</span>
-            <span id="localTime" class="text-white block w-full text-center rounded-md p-2 w-24"></span>
-        </div>
-    </div>
-    <div class="container mx-auto">
-        <ul class="display grid grid-cols-2 md:grid-cols-4 gap-x-40" id="display"></ul>
+<body class="">
+    <div class="bg-white min-h-screen">
+        <header class="p-4 flex justify-between items-center bg-[#8B4513]">
+            <div class="flex items-center space-x-4">
+                <button class="outline icon-btn" onclick="window.history.back()">
+                    <span class="left-arrow h-4 w-4"><-</span>
+                </button>
+            </div>
+            <div class="text-white">
+                <div class="local-time" id="local-time">Local Time: 12:00 AM</div>
+                <div class="server-time" id="server-time">Server Time: 12:00 AM</div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <select name="sort-by" id="sort-by" class="w-[180px] p-2 text-center text-white bg-orange-200 rounded-md">
+                    <option value="sort">Sort By</option>
+                    <option value="name">Name</option>
+                    <option value="total">Total</option>
+                </select>
+                <select name="sort-order" id="sort-order" class="w-[180px] p-2 text-center text-white bg-orange-200 rounded-md">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                <div id="date-picker" class="">
+                    <input type="date" id="attendance-date" class="p-2 text-center bg-orange-200 text-white rounded-md" min="2024-12-31" value="2024-12-31">
+                </div>
+            </div>
+        </header>
+        <main class="container mx-auto mt-8">
+            <h1 class="text-4xl font-bold mb-8 text-center text-[#8B4513]">Attendance</h1>
+            <div id="card-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div class="card border border-gray-200 bg-white shadow-md overflow-hidden">
+                    <div class="card-body p-4">
+                        <h2 class="text-xl font-semibold mb-2">OzBellVT</h2>
+                        <p class="mb-2">Overall Attendance: 88%</p>
+                        <div class="bar h-2 mb-4 bg-green-500 w-[88%]"></div>
+                        <h3 class="font-semibold mb-2">Attendance for 01-18-2025 :</h3>
+                        <div class="attendance-score flex">
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="1">1</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="2">2</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-red-500" title="absent" key="3">3</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="4">4</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-red-500" title="absent" key="5">5</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="6">6</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="7">7</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="8">8</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border border-gray-200 bg-white shadow-md overflow-hidden">
+                    <div class="card-body p-4">
+                        <h2 class="text-xl font-semibold mb-2">CDOM201</h2>
+                        <p class="mb-2">Overall Attendance: 33%</p>
+                        <div class="bar h-2 mb-4 bg-orange-500 w-[33%]"></div>
+                        <h3 class="font-semibold mb-2">Attendance for 01-18-2025 :</h3>
+                        <div class="attendance-score flex">
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="1">1</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="2">2</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-red-500" title="absent" key="3">3</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="4">4</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-red-500" title="absent" key="5">5</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="6">6</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="7">7</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="8">8</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border border-gray-200 bg-white shadow-md overflow-hidden">
+                    <div class="card-body p-4">
+                        <h2 class="text-xl font-semibold mb-2">IrithDream</h2>
+                        <p class="mb-2">Overall Attendance: 60%</p>
+                        <div class="bar h-2 mb-4 bg-yellow-500 w-[60%]"></div>
+                        <h3 class="font-semibold mb-2">Attendance for 01-18-2025 :</h3>
+                        <div class="attendance-score flex">
+                            <p>No attendance data for this date.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
     <script type="module">
+        const cardContainer = document.getElementById('card-container');
+        const sortSelect = document.getElementById('sort-by');
+        const orderSelect = document.getElementById('sort-order');
+        const attendanceDate = document.getElementById('attendance-date');
+        const localTime = document.getElementById('local-time');
+        const serverTime = document.getElementById('server-time');
+
+        let sortingType = 'name';
+        let sortingOrder = 'asc';
+
+        sortSelect.addEventListener('change', () => {
+            sortingType = sortSelect.value;
+            displayCards();
+        });
+
+        orderSelect.addEventListener('change', () => {
+            sortingOrder = orderSelect.value;
+            displayCards();
+        });
+
+        attendanceDate.addEventListener('change', async () => {
+            const selectedDate = new Date(attendanceDate.value);
+            const year = selectedDate.getFullYear();
+            const month = selectedDate.getMonth() + 1;
+            const day = selectedDate.getDate();
+
+            selectedDateSaved = `${year}-${month}-${day}`;
+
+            let attendance = await getAttendance(day, month, year);
+            displayCards();
+        });
+
+        function displayCards(userData) {
+            for (let i = 0; i < userData.length; i++) {
+                const card = document.createElement('div');
+                card.classList.add('card', 'border', 'border-gray-200', 'bg-white', 'shadow-md', 'overflow-hidden');
+                const cardBody = document.createElement('div');
+                cardBody.classList.add('card-body', 'p-4');
+                const cardTitle = document.createElement('h2');
+                cardTitle.classList.add('text-xl', 'font-semibold', 'mb-2');
+                cardTitle.textContent = userData[i].login;
+                const cardText = document.createElement('p');
+                cardText.classList.add('mb-2');
+                cardText.textContent = `Overall Attendance: ${userData[i].present}/${userData[i].total}`;
+                const bar = document.createElement('div');
+                bar.classList.add('bar', 'h-2', 'mb-4');
+                bar.style.backgroundColor = userData[i].present / userData[i].total > 0.5 ? '#008000' : '#FF0000';
+                bar.style.width = `${userData[i].present / userData[i].total * 100}%`;
+                const attendanceDate = document.createElement('h3');
+                attendanceDate.classList.add('font-semibold', 'mb-2');
+                attendanceDate.textContent = `Attendance for ${selectedDateSaved} :`;
+                const attendanceScore = document.createElement('div');
+                attendanceScore.classList.add('attendance-score', 'flex');
+                for (let j = 0; j < userData[i].present; j++) {
+                    const attendanceScoreItem = document.createElement('div');
+                    attendanceScoreItem.classList.add('w-6', 'h-6', 'mr-1', 'rounded-full', 'flex', 'items-center', 'justify-center', 'text-xs', 'text-white', 'bg-green-500');
+                    attendanceScoreItem.setAttribute('title', 'present');
+                    attendanceScoreItem.textContent = j + 1;
+                    attendanceScore.appendChild(attendanceScoreItem);
+                    cardBody.appendChild(attendanceScore);
+                }
+                cardBody.appendChild(cardTitle);
+                cardBody.appendChild(cardText);
+                cardBody.appendChild(bar);
+                cardBody.appendChild(attendanceDate);
+                cardBody.appendChild(attendanceScore);
+                card.appendChild(cardBody);
+                cardContainer.appendChild(card);
+            }
+        }
+
+        /*
+            <div class="card border border-gray-200 bg-white shadow-md overflow-hidden">
+                    <div class="card-body p-4">
+                        <h2 class="text-xl font-semibold mb-2">OzBellVT</h2>
+                        <p class="mb-2">Overall Attendance: 88%</p>
+                        <div class="bar h-2 mb-4 bg-green-500 w-[88%]"></div>
+                        <h3 class="font-semibold mb-2">Attendance for 01-18-2025 :</h3>
+                        <div class="attendance-score flex">
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="1">1</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="2">2</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-red-500" title="absent" key="3">3</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="4">4</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-red-500" title="absent" key="5">5</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="6">6</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="7">7</div>
+                            <div class="w-6 h-6 mr-1 rounded-full flex items-center justify-center text-xs text-white bg-green-500" title="present" key="8">8</div>
+                        </div>
+                    </div>
+                </div>
+        */
+    </script>
+    <!-- <script type="module">
 
         let display = document.getElementById('display');
         let sortingTypeElement = document.getElementById('sortingType');
@@ -230,6 +372,6 @@
         displayAttendance(attendance.data);
         dualTimes(attendance.server_time);
         
-    </script>
+    </script> -->
 </body>
 </html>
