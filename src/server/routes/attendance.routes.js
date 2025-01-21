@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
         attendance = todayAttendance;
     }
 
-    let attendanceList = await cacheClient.get('oz:list');
+    let attendanceList = await cacheClient.smembers('oz:list');
     
     res.json({
         status: 200,
