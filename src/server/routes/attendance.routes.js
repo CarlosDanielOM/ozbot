@@ -49,6 +49,8 @@ router.get('/', async (req, res) => {
         }
         attendance = todayAttendance;
     }
+
+    let attendanceList = await cacheClient.get('oz:list');
     
     res.json({
         status: 200,
@@ -62,7 +64,8 @@ router.get('/', async (req, res) => {
             day: today.getDate(),
             month: today.getMonth() + 1,
             year: today.getFullYear()
-        }
+        },
+        list: attendanceList
     });
 });
 
