@@ -15,6 +15,10 @@
                 </button>
             </div>
             <div class="text-white">
+                <div class="un-attended-users-number" id="un-attended-users-number">Unattended Users: <span id="unAttendedUsersNumber"></span></div>
+                <div class="attended-users-number" id="attended-users-number">Attended Users: <span id="attendedUsersNumbers"></span></div>
+            </div>
+            <div class="text-white">
                 <div class="local-time" id="local-time">Local Time: <span id="localTime"></span></div>
                 <div class="server-time" id="server-time">Server Time: <span id="serverTime"></span></div>
             </div>
@@ -46,8 +50,13 @@
         let attendanceDateElement = document.getElementById('attendance-date')
         const localTime = document.getElementById('local-time');
         const serverTime = document.getElementById('server-time');
+        const unAttendedUsersNumberElement = document.getElementById('un-attended-users-number');
+        const attendedUsersNumbersElement = document.getElementById('attended-users-number');
 
         let attendance = null;
+        let attendanceList = null;
+        let unAttendedUsersNumber = 0;
+        let attendedUsersNumbers = 0;
 
         let nowDate = new Date();
 
@@ -85,6 +94,10 @@
 
             attendanceDateElement.max = `${maxYear}-${maxMonth}-${maxDay}`;
 
+            attendanceList = attendance.list;
+
+            attendance.data = checkUnAttended(attendance.data, attendanceList);
+            
             displayCards(attendance.data);
             dualTimes(attendance.server_time);
         }
@@ -92,13 +105,17 @@
         sortSelect.addEventListener('change', (e) => {
             sortingType = e.target.value;
             document.querySelector('#defaultValueSortType').setAttribute('disabled', true);
-            let sortedAttendance = sortingAttendance(attendance.data);
+            let fullAttendance = checkUnAttended(attendance.data, attendanceList, true);
+
+            let sortedAttendance = sortingAttendance(fullAttendance);
             displayCards(sortedAttendance);
         });
 
         orderSelect.addEventListener('change', (e) => {
             sortingOrder = e.target.value;
-            let sortedAttendance = sortingAttendance(attendance.data);
+            let fullAttendance = checkUnAttended(attendance.data, attendanceList, true);
+
+            let sortedAttendance = sortingAttendance(fullAttendance);
             displayCards(sortedAttendance);
         });
 
@@ -112,7 +129,9 @@
 
             attendance = await getAttendance(day, month, year);
 
-            attendance.data = sortingAttendance(attendance.data); 
+            let fullAttendance = checkUnAttended(attendance.data, attendanceList);
+
+            attendance.data = sortingAttendance(fullAttendance); 
             
             displayCards(attendance.data);
         });
@@ -216,10 +235,42 @@
                     if(user.login === 'total') return false;
                     return data.data.findIndex(u => u.login === user.login) === index;
                 });
-                return {data: data.data, server_time: data.server_time, server_date: data.server_date};
+                return {data: data.data, server_time: data.server_time, server_date: data.server_date, list: data.list};
             } else {
                 console.log({data});
             }
+        }
+
+        function checkUnAttended(userList, attendanceList, sorting = false) {
+            let unattended = attendanceList.filter(user => !userList.find(u => u.login === user));
+
+            if(!sorting) {
+                unAttendedUsersNumber = unattended.length;
+                attendedUsersNumbers = userList.length;
+
+                unAttendedUsersNumberElement.getElementsByTagName('span')[0].innerHTML = unAttendedUsersNumber;
+                attendedUsersNumbersElement.getElementsByTagName('span')[0].innerHTML = attendedUsersNumbers;
+            }
+
+            let newList = [];
+
+            for(let i = 0; i < unattended.length; i++) {
+                let user = {
+                    login: unattended[i],
+                    date: {
+                        day: selectedDateSaved.split('-')[2],
+                        month: selectedDateSaved.split('-')[1],
+                        year: selectedDateSaved.split('-')[0]
+                    },
+                    present: 0,
+                    total: 8
+                }
+                newList.push(user);
+            }
+
+            userList.push(...newList);
+            
+            return userList;
         }
 
         function displayCards(userData) {
