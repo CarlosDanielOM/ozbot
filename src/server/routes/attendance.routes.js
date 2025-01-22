@@ -26,10 +26,10 @@ router.get('/', async (req, res) => {
         todayUsers = keys.map(key => key.split(':')[2]);
 
         if(todayTotal === null) {
-            todayTotal = 0;
+            todayTotal = 1;
         }
 
-        todayTotal = parseInt(todayTotal) + 1;
+        todayTotal = parseInt(todayTotal);
 
         for(let i = 0; i < todayUsers.length; i++) {
             let user = todayUsers[i];

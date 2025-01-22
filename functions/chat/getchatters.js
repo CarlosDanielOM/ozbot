@@ -11,6 +11,7 @@ async function getChatters(token, channelID) {
     let params = new URLSearchParams();
     params.append('broadcaster_id', channelID);
     params.append('moderator_id', channelID);
+    params.append('first', 1000);
 
     try {
         let response = await fetch(getTwitchHelixUrl('chat/chatters', params), {
