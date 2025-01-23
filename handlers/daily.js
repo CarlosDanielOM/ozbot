@@ -31,7 +31,9 @@ async function daily() {
     }
 
     cacheClient.del('oz:assistance:total');
-    
+
+    //? Add a new list based on the list of users
+    console.log('Daily update');
 }
 
 module.exports = {

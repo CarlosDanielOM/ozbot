@@ -22,6 +22,7 @@ async function assistance() {
     });
 
     cacheClient.incr('oz:assistance:total');
+    console.log('Assistance updated');
 }
 
 module.exports = {

@@ -69,20 +69,33 @@ router.get('/', async (req, res) => {
     });
 });
 
+router.get('/unattended', async (req, res) => {
+    const cacheClient = getClient();
+
+    let list = await cacheClient.smembers('oz:list');
+    let keys = await cacheClient.keys('oz:assistance:*');
+
+    keys = keys.map(key => key.split(':')[2]);
+    list = list.filter(user => !keys.includes(user));
+
+    for(let i = 0; i < list.length; i++) {
+        let user = list[i];
+
+        // await cacheClient.set(`oz:assistance:${user}`, 0);
+    }
+    
+    res.send({list: list.length, keys: keys.length});
+});
+
 router.get('/fix', async (req, res) => {
-    // let attendance = await attendanceSchema.find({'date.day': 5});
+    let attendance = await attendanceSchema.find({'date.day': 31});
+    let logins = attendance.map(user => user.login);
 
-    // for(let i = 0; i < attendance.length; i++) {
-    //     if(attendance[i].present > 8) attendance[i].present = 8;
-    //     if(attendance[i].total >8) attendance[i].total = 8;
+    for(let i = 0; i < attendance.length; i++) {
+        
+    }
 
-    //     console.log(attendance[i]);
-
-    //     await attendance[i].save();
-
-    // }
-
-    res.send('quack')
+    res.send({attendance: attendance.length, logins})
     
 });
 
