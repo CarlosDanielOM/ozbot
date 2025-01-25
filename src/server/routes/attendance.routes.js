@@ -81,12 +81,13 @@ router.get('/unattended', async (req, res) => {
     for(let i = 0; i < list.length; i++) {
         let user = list[i];
 
-        // await cacheClient.set(`oz:assistance:${user}`, 0);
+        await cacheClient.set(`oz:assistance:${user}`, 0);
     }
     
     res.send({list: list.length, keys: keys.length});
 });
 
+//? To be finished
 router.get('/fix', async (req, res) => {
     let attendance = await attendanceSchema.find({'date.day': 31});
     let logins = attendance.map(user => user.login);
