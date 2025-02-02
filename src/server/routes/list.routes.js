@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
     let exists = await cacheClient.sismember('oz:list', userName);
 
     if(exists) {
-        return res.status(401).json({error: 'User already exists in list', message: 'User already exists in list', status: 401});
+        return res.status(409).json({error: 'User already exists in list', message: 'User already exists in list', status: 409});
     }
 
     let ozList = await listSchema.findOne({ name: ozLogin });

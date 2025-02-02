@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assistance List</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
-<body class="overflow-hidden">
+<body class="">
     <div class="back-menu fixed top-4 left-4 z-10 flex justify-between items-center">
         <button class="text-white bg-orange-400 rounded-md p-2 w-24" onclick="window.history.back()">Back</button>
     </div>
@@ -15,20 +20,24 @@
             <span class="text-white block w-full text-center rounded-md p-2 w-24"></span>
         </div>
     </div>
-    <div class="container mx-auto">
+    <div class="container mx-auto" id="form">
         <h1 class="text-center text-5xl font-bold my-4">Add User to Attendance List</h1>
         <div class="form-container max-w-96 mx-auto">
             <form id="addForm">
                 <input type="text" placeholder="Username" id="username" class="w-full p-2 text-center text-white bg-orange-200 rounded-md">
+                <div class="flex justify-evenly my-4">
+                    <button type="submit" class="w-40 p-2 text-center text-white bg-orange-400 rounded-md">Add</button>
+                    <button onclick="deleteAll()" class="w-40 p-2 text-center text-white bg-black rounded-md">Delete All</button>
+                </div>
             </form>
-            <div class="flex justify-evenly my-4">
-                <button onclick="add()" class="w-40 p-2 text-center text-white bg-orange-400 rounded-md">Add</button>
-                <button onclick="deleteAll()" class="w-40 p-2 text-center text-white bg-black rounded-md">Delete All</button>
-            </div>
         </div>
     </div>
-    <div class="container mx-auto overflow-y-auto overflow-x-hidden max-h-[26rem]">
+    <div class="container mx-auto">
         <ul id="display" class="grid grid-cols-2 md:grid-cols-4 gap-x-40"></ul>
+    </div>
+
+    <div class="topBtn fixed bottom-4 right-4 z-10 flex justify-between items-center">
+        <button class="text-white bg-orange-400 rounded-md p-2 w-24" onclick="window.scrollTo(0, 0)">Back to Top</button>
     </div>
 
     <script>
@@ -124,9 +133,11 @@
             alert.classList.remove('invisible');
             switch(type) {
                 case 'success':
+                    alert.classList.remove('bg-red-500');
                     alert.classList.add('bg-green-500');
                     break;
                 case 'error':
+                    alert.classList.remove('bg-green-500');
                     alert.classList.add('bg-red-500');
                     break;
                 default:
