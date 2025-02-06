@@ -50,6 +50,15 @@ async function daily() {
     cacheClient.del('oz:assistance:total');
 
     //? Add a new list based on the list of users
+    
+    list = await cacheClient.smembers('oz:list');
+    
+    for(let i = 0; i < list.length; i++) {
+        let user = list[i];
+        
+        await cacheClient.set(`oz:assistance:${user}`, 0);
+    }
+
     console.log('Daily update');
 }
 
