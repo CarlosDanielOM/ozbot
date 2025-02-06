@@ -96,7 +96,7 @@
 
             attendanceList = attendance.list;
 
-            attendance.data = checkUnAttended(attendance.data, attendanceList);
+            // attendance.data = checkUnAttended(attendance.data, attendanceList);
             
             displayCards(attendance.data);
             dualTimes(attendance.server_time);
@@ -105,17 +105,15 @@
         sortSelect.addEventListener('change', (e) => {
             sortingType = e.target.value;
             document.querySelector('#defaultValueSortType').setAttribute('disabled', true);
-            let fullAttendance = checkUnAttended(attendance.data, attendanceList, true);
 
-            let sortedAttendance = sortingAttendance(fullAttendance);
+            let sortedAttendance = sortingAttendance(attendance.data);
             displayCards(sortedAttendance);
         });
 
         orderSelect.addEventListener('change', (e) => {
             sortingOrder = e.target.value;
-            let fullAttendance = checkUnAttended(attendance.data, attendanceList, true);
 
-            let sortedAttendance = sortingAttendance(fullAttendance);
+            let sortedAttendance = sortingAttendance(attendance.data);
             displayCards(sortedAttendance);
         });
 
