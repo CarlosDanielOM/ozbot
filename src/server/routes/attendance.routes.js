@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const attendanceSchema = require('../../../models/attendance');
+const channelSchema = require('../../../models/channel');
 const { getClient } = require('../../../util/database/dragonfly');
 
 router.get('/', async (req, res) => {
@@ -98,6 +99,41 @@ router.get('/fix', async (req, res) => {
 
     res.send({attendance: attendance.length, logins})
     
+});
+
+router.put('/intervals', async (req, res) => {
+    let cacheClient = getClient();
+    let body = req.body;
+
+    if(!body.daily_attendance) {
+        res.send({status: 400, message: 'No daily attendance provided'});
+        return;
+    }
+
+    if(typeof body.daily_attendance !== 'number') {
+        res.send({status: 400, message: 'Daily attendance must be a number'});
+        return;
+    }
+
+    if(body.daily_attendance < 1) {
+        res.send({status: 400, message: 'Daily attendance must be greater than 0'});
+        return;
+    }
+
+    if(body.daily_attendance > 1440) {
+        res.send({status: 400, message: 'Daily attendance cannot be more than 1440'});
+        return;
+    }
+
+    try {
+        await cacheClient.hset('oz:data', 'daily_attendance', body.daily_attendance);
+        await channelSchema.updateOne({name: 'ozbellvt'}, {$set: {daily_attendance: body.daily_attendance}});
+    } catch (error) {
+        res.send({status: 500, message: 'Error updating daily attendance'});
+        return;
+    }
+
+    res.send({status: 200, message: 'Daily attendance updated'});
 });
 
 module.exports = router;
