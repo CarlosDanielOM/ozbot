@@ -14,10 +14,10 @@
         <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="attendance()">Attendance</button>
 
         //? Input to change the intervals of the attendance timer
-        <div class="w-fit p-2 text-center text-white bg-orange-400 rounded-md">
+        <div class="w-fit p-2 text-center text-black bg-orange-400 rounded-md">
             <label for="daily_attendance">Assistencias por dia</label>
             <input type="number" id="daily_attendance" name="daily_attendance" value="8">
-            <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="changeInterval()">Cambiar intervalos</button>
+            <button class="w-fit p-2 text-center text-white bg-blue-400 rounded-md" onclick="changeInterval()">Cambiar intervalos</button>
             <p>Al cambiar el intervalo puede que haya un error en la calculacion en el siguiuente dia por el cambio de tiempo en los intervalos, se solucionara al dia siguiente.</p>
         </div>
     </div>
@@ -35,7 +35,7 @@
                 alert('Daily attendance cannot be more than 1440');
                 return;
             }
-            fetch('/attendance/intervals', {
+            fetch('https://oz.domdimabot.com/attendance/intervals', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
