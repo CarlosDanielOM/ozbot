@@ -8,6 +8,9 @@ function startTime(daily_attendance) {
   }
   let diffInMinutes = nextCheckpointMinutes - totalMinutes;
   if (diffInMinutes < 0) diffInMinutes += 1440;
+
+  console.log(`Next checkpoint in ${diffInMinutes} minutes`)
+  
   return diffInMinutes * 60 * 1000;
 }
 

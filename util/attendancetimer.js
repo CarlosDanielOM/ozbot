@@ -5,6 +5,8 @@ async function attendance_timer(daily_attendance) {
 
   let miliseconds = timeframes * 60 * 1000;
 
+  console.log(`Timeframe: ${timeframes}`)
+
   return miliseconds;
   
 }

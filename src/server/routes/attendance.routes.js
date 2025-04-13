@@ -106,26 +106,31 @@ router.put('/intervals', async (req, res) => {
     let body = req.body;
 
     if(!body.daily_attendance) {
+        console.log('No daily attendance provided')
         res.send({status: 400, message: 'No daily attendance provided'});
         return;
     }
 
     if(typeof body.daily_attendance !== 'number') {
+        console.log('Daily attendance must be a number')
         res.send({status: 400, message: 'Daily attendance must be a number'});
         return;
     }
 
     if(body.daily_attendance < 1) {
+        console.log('Daily attendance must be greater than 0')
         res.send({status: 400, message: 'Daily attendance must be greater than 0'});
         return;
     }
 
     if(body.daily_attendance > 1440) {
+        console.log('Daily attendance cannot be more than 1440')
         res.send({status: 400, message: 'Daily attendance cannot be more than 1440'});
         return;
     }
 
     try {
+        console.log('Updating daily attendance')
         await cacheClient.hset('oz:data', 'daily_attendance', body.daily_attendance);
         await channelSchema.updateOne({login: 'ozbellvt'}, {$set: {daily_attendance: body.daily_attendance}});
     } catch (error) {
