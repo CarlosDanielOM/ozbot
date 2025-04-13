@@ -27,6 +27,11 @@
 
         function changeInterval() {
             let daily_attendance = document.getElementById('daily_attendance').value;
+            daily_attendance = parseInt(daily_attendance);
+            if(isNaN(daily_attendance)) {
+                alert('Daily attendance must be a number');
+                return;
+            }
             if(daily_attendance < 1) {
                 alert('Daily attendance must be greater than 0');
                 return;
