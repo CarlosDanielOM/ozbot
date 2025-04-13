@@ -32,7 +32,7 @@ async function init() {
     let ozData = null;
 
     if(!ozLogin || !ozId || !ozToken) {
-        ozData = await channelSchema.findOne({ name: 'ozbellvt' });
+        ozData = await channelSchema.findOne({ login: 'ozbellvt' });
         if(!ozData) {
             console.log('No ozbellvt channel found');
             return;
