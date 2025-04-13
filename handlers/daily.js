@@ -13,9 +13,6 @@ async function daily() {
     let total = await cacheClient.get('oz:assistance:total');
 
     total = parseInt(total);
-    total++;
-
-    if(total > 8) total = 8;
 
     for(let login of logins) {
         let assistance = await cacheClient.get(`oz:assistance:${login}`);

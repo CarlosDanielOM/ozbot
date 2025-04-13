@@ -1,39 +1,14 @@
-function startTime() {
-    let initialMinutes = 0;
-    let now = Date.now();
-
-    let date = new Date(now);
-    
-    let hours = date.getHours() + 1;
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
-
-    let remainderHours = hours % 3;
-    let remainderMinutes = 60 - minutes;
-
-    console.log({remainderHours, remainderMinutes});
-
-    switch(remainderHours) {
-        case 1:
-            initialMinutes = remainderMinutes + 120;
-            break;
-        case 2:
-            initialMinutes = remainderMinutes + 60;
-            break;
-        case 0:
-            initialMinutes = remainderMinutes;
-            break;
-        default:
-            break;
-    }
-
-    let initialSeconds = initialMinutes * 60;
-
-    let miliseconds = initialSeconds * 1000;
-
-    return miliseconds;
+function startTime(daily_attendance) {
+  let now = new Date();
+  let totalMinutes = now.getHours() * 60 + now.getMinutes();
+  let intervalMinutes = (24 * 60) / daily_attendance;
+  let nextCheckpointMinutes = Math.floor(totalMinutes / intervalMinutes) * intervalMinutes + intervalMinutes;
+  if (nextCheckpointMinutes >= 1440) {
+    nextCheckpointMinutes = 0;
+  }
+  let diffInMinutes = nextCheckpointMinutes - totalMinutes;
+  if (diffInMinutes < 0) diffInMinutes += 1440;
+  return diffInMinutes * 60 * 1000;
 }
 
-module.exports = {
-    startTime
-};
+module.exports = { startTime };

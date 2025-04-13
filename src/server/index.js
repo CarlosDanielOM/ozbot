@@ -4,13 +4,18 @@ const { refreshToken } = require('../../util/token');
 const { startTime } = require('../../util/timestarter');
 const { assistance } = require('../../handlers/assistance');
 const { endDayTimer } = require('../../util/endtimer');
+const attendance_timer = require('../../util/attendancetimer')
 
 const listSchema = require('../../models/lists');
+const channelSchema = require('../../models/channel')
+
 const { daily } = require('../../handlers/daily');
 const { getStream } = require('../../functions/stream/getstream');
 
 const threeHours = 1000 * 60 * 60 * 3;
 const dayInMiliseconds = 1000 * 60 * 60 * 24;
+let attendance_interval = threeHours;
+let daily_attendance = 3;
 
 async function init() {
     await MONGODB.init();
@@ -21,6 +26,31 @@ async function init() {
     let ozLogin = await cacheClient.hget('oz:data', 'login');
     let ozId = await cacheClient.hget('oz:data', 'id');
     let ozToken = await cacheClient.hget('oz:data', 'token');
+    daily_attendance = await cacheClient.hget('oz:data', 'daily_attendance') ?? 3;
+    daily_attendance = parseInt(daily_attendance);
+
+    let ozData = null;
+
+    if(!ozLogin || !ozId || !ozToken) {
+        ozData = await channelSchema.findOne({ name: 'ozbellvt' });
+        if(!ozData) {
+            console.log('No ozbellvt channel found');
+            return;
+        }
+        await cacheClient.hset('oz:data', 'login', ozData.login);
+        await cacheClient.hset('oz:data', 'id', ozData.user_id);
+        await cacheClient.hset('oz:data', 'token', ozData.user_token);
+        await cacheClient.hset('oz:data', 'refreshToken', ozData.user_refresh_token);
+
+        ozLogin = ozData.login;
+        ozId = ozData.user_id;
+        ozToken = ozData.user_token;
+
+        if(ozData.daily_attendance) {
+            daily_attendance = ozData.daily_attendance;
+            await cacheClient.hset('oz:data', 'daily_attendance', daily_attendance);
+        }
+    }
     
     let ozList = await listSchema.findOne({ name: ozLogin });
 
@@ -49,7 +79,8 @@ async function init() {
         console.log('Refreshed token');
     }, 1000 * 60 * 60 * 3);
 
-    let initialTime = startTime();
+    let initialTime = startTime(daily_attendance);
+    attendance_interval = await attendance_timer(daily_attendance);
     let endDayTime = endDayTimer();
 
     setTimeout(async () => {
@@ -58,7 +89,8 @@ async function init() {
         setInterval(async () => {
             console.log('Timer running');
             assistance();
-        }, threeHours);
+            attendance_interval = await attendance_timer(daily_attendance);
+        }, attendance_interval);
     }, initialTime);
 
     setTimeout(async () => {
