@@ -14,4 +14,8 @@ router.get('/attendance', async (req, res) => {
     res.sendFile(path.join(__dirname, '../routes/public/attendance.html'));
 });
 
+router.get('/weekly-attendance', async (req, res) => {
+    res.sendFile(path.join(__dirname, '../routes/public/weekly-attendance.html'));
+});
+
 module.exports = router;

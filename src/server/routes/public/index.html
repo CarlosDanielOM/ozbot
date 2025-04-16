@@ -12,6 +12,7 @@
         <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="login()">Login with Twitch</button>
         <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="list()">List</button>
         <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="attendance()">Attendance</button>
+        <button class="w-fit p-2 text-center text-white bg-orange-400 rounded-md" onclick="weeklyAttendance()">Weekly Attendance</button>
 
         //? Input to change the intervals of the attendance timer
         <div class="w-fit p-2 text-center text-black bg-orange-400 rounded-md">
@@ -67,6 +68,10 @@
 
         function attendance() {
             window.location.href = '/view/attendance';
+        }
+
+        function weeklyAttendance() {
+            window.location.href = '/view/weekly-attendance';
         }
         
     </script>
