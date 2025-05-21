@@ -11,7 +11,7 @@ let options = {
         username: process.env.BOT_USERNAME,
         password: process.env.BOT_PASSWORD
     },
-    channels: ['ozbellvt']
+    channels: ['ozbellgaming']
 }
 
 async function clientConnect() {

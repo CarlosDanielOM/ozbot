@@ -8,7 +8,7 @@ const channelSchema = new mongoose.Schema({
     user_id: String,
     user_token: String,
     user_refresh_token: String,
-    daily_attendance: {type: Number, default: 3},
+    daily_attendance: {type: Number, default: 8},
 });
 
 module.exports = mongoose.model('channel', channelSchema);

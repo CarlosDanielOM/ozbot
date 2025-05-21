@@ -132,7 +132,8 @@ router.put('/intervals', async (req, res) => {
     try {
         console.log('Updating daily attendance')
         await cacheClient.hset('oz:data', 'daily_attendance', body.daily_attendance);
-        await channelSchema.updateOne({login: 'ozbellvt'}, {$set: {daily_attendance: body.daily_attendance}});
+        let ozLogin = await cacheClient.hget('oz:data', 'login');
+        await channelSchema.updateOne({login: ozLogin}, {$set: {daily_attendance: body.daily_attendance}});
     } catch (error) {
         console.log({error, where: 'Intervals change'})
         res.send({status: 500, message: 'Error updating daily attendance'});

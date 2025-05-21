@@ -32,9 +32,9 @@ async function init() {
     let ozData = null;
 
     if(!ozLogin || !ozId || !ozToken) {
-        ozData = await channelSchema.findOne({ login: 'ozbellvt' });
+        ozData = await channelSchema.findOne({ login: ozLogin });
         if(!ozData) {
-            console.log('No ozbellvt channel found');
+            console.log('No ozbellgaming channel found');
             return;
         }
         await cacheClient.hset('oz:data', 'login', ozData.login);
@@ -56,12 +56,12 @@ async function init() {
 
     if(!ozList) {
         ozList = {
-            name: "ozbellvt",
+            name: "ozbellgaming",
             list: []
         }
     }
     if(ozList.list.length == 0) {
-        ozList.list = ['ozbellvt'];
+        ozList.list = ['ozbellgaming'];
     }
     
     await cacheClient.sadd('oz:list', ozList.list);
